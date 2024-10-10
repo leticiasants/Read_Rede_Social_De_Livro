@@ -1,0 +1,4 @@
+para conseguir usar o vite e o run dev, fiz um role usando concurrently, para rodar os 2 juntos
+ae usa:
+    -npm run build
+    -npm run serve
