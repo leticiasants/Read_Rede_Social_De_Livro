@@ -7,6 +7,7 @@ import passport from 'passport';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client'; 
 import initializePassport from './passportConfig.js'; 
+import { fileURLToPath } from 'url';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -16,8 +17,11 @@ initializePassport(passport);
 
 app.use(cors());
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-console.log(__dirname)
+const __filename = fileURLToPath(import.meta.url); // AVISO GAMBIARRA
+const __dirname2 = path.dirname(__filename); // pega o diretorio porem está errado
+const __dirname = path.join(__dirname2, '..'); // arrumo o erro voltando 1 diretorio
+console.log("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII", __dirname)
+
 app.use(express.static(path.join(__dirname, 'dist')));
 app.set('view engine', 'ejs');
 app.use(express.json());
