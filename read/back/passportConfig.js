@@ -1,57 +1,46 @@
-const LocalStrategy = require('passport-local').Strategy;
-const { authenticate } = require('passport');
-const { pool } = require('./dbConfig');
-const bcrypt = require('bcrypt');
+import { Strategy as LocalStrategy } from 'passport-local'; // Importando a estratégia local
+import { PrismaClient } from '@prisma/client'; // Importando o Prisma Client
+import bcrypt from 'bcrypt'; // Importando o bcrypt
 
-function initialize(passport){
-const authenticateUser = (email, password, done)=>{
-    pool.query(
-        `SELECT * FROM users WHERE email = $1`, [email], (err, results) =>{
-            if(err){
-                throw err;
-            }
-            console.log(results.rows);
+const prisma = new PrismaClient();
 
-            if(results.rows.lenght > 0){
-                const user = results.rows[0];
+export default function initialize(passport) {
+    const authenticateUser = async (email, password, done) => {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { email: email },
+            });
 
-                bcrypt.compare(password, user.password, (err, isMatch)=>{
-                    if(err){
-                        throw err
-                    }
-
-                    if(isMatch){
-                        return done(null, user);
-                    } else {
-                        return done(null, false, {message: "senha não está correta"});
-                    }
-                });
-            } else {
-                return done(null, false, {message: "Email não registrado"});
-            }
-        }
-    );
-}
-
-    passport.use(
-        new LocalStrategy ({
-            usernameField: "email",
-            passwordField: "password",
-        }, authenticateUser)
-    );
-
-    passport.serializeUser((user, done)=> done(null, user.id));
-
-    passport.deserializeUser((id, done) =>{
-        pool.query(
-            `SELECT * FROM users WHERE id = $1`, [id], (err, results)=>{
-                if(err){
-                    throw err
+            if (user) {
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (isMatch) {
+                    return done(null, user);
+                } else {
+                    return done(null, false, { message: "Senha não está correta" });
                 }
-                return done(null, results.rows[0]);
+            } else {
+                return done(null, false, { message: "Email não registrado" });
             }
-        )
-    })
-}
+        } catch (err) {
+            return done(err);
+        }
+    };
 
-module.exports = initialize;
+    passport.use(new LocalStrategy({
+        usernameField: "email",
+        passwordField: "password",
+    }, authenticateUser));
+
+    passport.serializeUser((user, done) => done(null, user.id));
+
+    passport.deserializeUser(async (id, done) => {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: id },
+            });
+            return done(null, user);
+        } catch (err) {
+            return done(err);
+        }
+    });
+}
