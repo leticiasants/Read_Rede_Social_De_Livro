@@ -99,28 +99,28 @@ app.post('/users/register', async (req, res) => {
 
     if (errors.length > 0) {
         return res.status(400).json({ errors });
+    } 
+
+    let hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword);
+
+    const existingUser = await prisma.user.findUnique({
+        where: { email: email },
+    });
+
+    if (existingUser) {
+        errors.push({ message: "E-mail já registrado" });
+        return res.status(400).json({ errors });
     } else {
-        let hashedPassword = await bcrypt.hash(password, 10);
-        console.log(hashedPassword);
-
-        const existingUser = await prisma.user.findUnique({
-            where: { email: email },
+        const newUser = await prisma.user.create({
+            data: {
+                email: email,
+                username: username,
+                password: hashedPassword,
+            },
         });
-
-        if (existingUser) {
-            errors.push({ message: "Email já registrado" });
-            return res.status(400).json({ errors });
-        } else {
-            const newUser = await prisma.user.create({
-                data: {
-                    email: email,
-                    username: username,
-                    password: hashedPassword,
-                },
-            });
-            req.flash('success_msg', "Você está registrado agora, por favor logue");
-            return res.status(201).json({ message: "Usuário registrado com sucesso!" });
-        }
+        req.flash('success_msg', "Você está registrado agora, por favor logue");
+        return res.status(201).json({ message: "Usuário registrado com sucesso!" });
     }
 });
 
