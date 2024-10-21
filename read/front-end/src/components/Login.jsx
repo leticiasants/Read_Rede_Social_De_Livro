@@ -1,10 +1,12 @@
 export default function Login() {
+  const executeLogin = () => {
+  }
   return (
     <>
       <h1 className="mb-4 flex flex-col items-center text-4xl font-bold text-slate-100">
         Login
       </h1>
-      <form action="" className="w-92 flex flex-col items-center">
+      <form action="/users/login" className="w-92 flex flex-col items-center">
         <label
           htmlFor="username"
           className="w-72 text-left text-slate-100 text-sm mb-1"
@@ -34,6 +36,7 @@ export default function Login() {
         <button
           type="submit"
           className="w-72 h-10 mt-6 border-none rounded-sm p-2 text-base font-semibold bg-[rgba(251,251,251,0.59)] text-[rgba(0,0,0,0.92)] hover:bg-[rgba(251,251,251,0.95)]"
+          onClick={executeLogin}
         >
           Entrar
         </button>

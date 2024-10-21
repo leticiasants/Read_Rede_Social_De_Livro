@@ -13,7 +13,7 @@ function AuthPage({ children }) {
 }
 
 AuthPage.propTypes = {
-  children: PropTypes.children,
+  children: PropTypes.node.isRequired,
 };
 
 export default AuthPage;

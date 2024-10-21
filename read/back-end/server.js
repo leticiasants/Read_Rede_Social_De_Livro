@@ -1,149 +1,142 @@
-import express from "express";
-import path from 'path';
-import bcrypt from 'bcrypt';
-import session from 'express-session';
-import flash from 'express-flash';
-import passport from 'passport';
-import cors from 'cors';
-import { PrismaClient } from '@prisma/client'; 
-import initializePassport from './passportConfig.js'; 
-import { fileURLToPath } from 'url';
-
+const express = require("express");
 const app = express();
-const prisma = new PrismaClient();
+const path = require("path");
+const bcrypt = require("bcrypt");
+const session = require("express-session");
+const flash = require("express-flash");
+const passport = require("passport");
+const cors = require("cors");
+const { PrismaClient } = require("@prisma/client");
+const initializePassport = require("./passportConfig");
+
 const PORT = process.env.PORT || 4000;
 
 initializePassport(passport);
 
 app.use(cors());
 
-const __filename = fileURLToPath(import.meta.url); // AVISO GAMBIARRA
-const __dirname2 = path.dirname(__filename); // pega o diretorio porem está errado
-const __dirname = path.join(__dirname2, '..'); // arrumo o erro voltando 1 diretorio
-console.log("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII", __dirname)
-
-app.use(express.static(path.join(__dirname, 'dist')));
-app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, "../dist")));
+app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
+app.use(
+  session({
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-}));
-
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.get('/', (req, res) => {
-    console.log("aqui renderizando tlg");
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html')); 
+const prisma = new PrismaClient();
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "/index.html"));
 });
 
-app.get('/users/register', checkAuthenticated, (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html')); 
+app.get("/users/register", checkAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "/index.html"));
 });
 
-app.post('/users/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ message: "Erro ao autenticar." });
-        }
-        if (!user) {
-            return res.status(401).json({ message: "Email ou senha incorretos." });
-        }
-        req.logIn(user, (err) => {
-            if (err) {
-                return res.status(500).json({ message: "Erro ao fazer login." });
-            }
-            return res.status(200).json({ message: "Login realizado com sucesso!" });
-        });
-    })(req, res, next); 
-});
-
-app.get('/users/dashboard', checkNotAuthenticated, (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));o
-});
-
-app.get('/users/logout', (req, res) => {
-    req.logOut();
-    req.flash('success_msg', "Você deslogou!");
-    res.redirect('/users/login');
-});
-
-app.post('/users/register', async (req, res) => {
-    let { email, password, password2, username } = req.body;
-
-    console.log("AQUI2__________", {
-        email,
-        password,
-        password2,
-        username 
+app.get("/users/login", checkAuthenticated, (req, res) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return res.status(500).json({ message: "Erro ao autenticar." });
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Email ou senha incorretos." });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return res.status(500).json({ message: "Erro ao fazer login." });
+      }
+      return res.status(200).json({ message: "Login realizado com sucesso!" });
     });
-
-    let errors = [];
-
-    if (!email || !password || !password2) {
-        errors.push({ message: "Por favor insira todos os campos" });
-    }
-
-    if (password.length < 6) {
-        errors.push({ message: "A senha deve ter pelo menos 6 caracteres" });
-    }
-
-    if (password !== password2) {
-        errors.push({ message: "As senhas devem ser iguais" });
-    }
-
-    if (errors.length > 0) {
-        return res.status(400).json({ errors });
-    } 
-
-    let hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword);
-
-    const existingUser = await prisma.user.findUnique({
-        where: { email: email },
-    });
-
-    if (existingUser) {
-        errors.push({ message: "E-mail já registrado" });
-        return res.status(400).json({ errors });
-    } else {
-        const newUser = await prisma.user.create({
-            data: {
-                email: email,
-                username: username,
-                password: hashedPassword,
-            },
-        });
-        req.flash('success_msg', "Você está registrado agora, por favor logue");
-        return res.status(201).json({ message: "Usuário registrado com sucesso!" });
-    }
+  })(req, res);
 });
 
-app.post('/users/login', passport.authenticate('local', {
-    successRedirect: '/users/dashboard',
-    failureRedirect: '/users/login',
-    failureFlash: true
-}));
+app.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "/index.html"));
+});
+
+app.get("/users/logout", (req, result) => {
+  req.logOut();
+  req.flash("sucess_msg", "voce deslogou!");
+  res.redirect("/users/login");
+});
+
+app.post("/users/register", async (req, res) => {
+  let { username, email, password, password2 } = req.body;
+
+  let errors = [];
+
+  if (!email || !password || !password2) {
+    errors.push({ message: "Por favor insira todos os campos" });
+  }
+
+  if (password.length < 6) {
+    errors.push({ message: "A senha deve ter pelomenos 6 caracteres" });
+  }
+
+  if (password !== password2) {
+    errors.push({ message: "As senhas devem ser iguais" });
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({ errors });
+  }
+
+  let hashedPassword = await bcrypt.hash(password, 10);
+
+  const userExists = await prisma.user.findFirst({
+    where: { email },
+  });
+
+  if (userExists) {
+    errors.push({ message: "E-mail já registrado!" });
+    return res.status(400).json({ errors });
+  }
+
+  await prisma.user.create({
+    data: {
+      username: username,
+      email: email,
+      password: hashedPassword,
+    },
+  });
+
+  return res
+    .status(201)
+    .json({ message: "O usuário foi registrado com sucesso!" });
+});
+
+app.post(
+  "/users/login",
+  passport.authenticate("local", {
+    successRedirect: "/users/dashboard",
+    failureRedirect: "/users/login",
+    failureFlash: true,
+  })
+);
 
 function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/users/dashboard');
-    }
-    next();
+  if (req.isAuthenticated()) {
+    //return res.redirect("/users/dashboard");
+  }
+  next();
 }
 
 function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/users/login');
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect("/users/login");
 }
 
 app.listen(PORT, () => {
-    console.log(`Server rodando no Port ${PORT}`);
+  console.log(`Server rodando no Port ${PORT}`);
 });

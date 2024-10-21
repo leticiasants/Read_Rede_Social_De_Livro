@@ -1,25 +1,25 @@
-import { Strategy as LocalStrategy } from 'passport-local'; // Importando a estratégia local
-import { PrismaClient } from '@prisma/client'; // Importando o Prisma Client
-import bcrypt from 'bcrypt'; // Importando o bcrypt
+const LocalStrategy = require('passport-local').Strategy;
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
-export default function initialize(passport) {
+function initialize(passport) {
     const authenticateUser = async (email, password, done) => {
         try {
             const user = await prisma.user.findUnique({
                 where: { email: email },
             });
 
-            if (user) {
-                const isMatch = await bcrypt.compare(password, user.password);
-                if (isMatch) {
-                    return done(null, user);
-                } else {
-                    return done(null, false, { message: "Senha não está correta" });
-                }
-            } else {
+            if (!user) {
                 return done(null, false, { message: "Email não registrado" });
+            }
+
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (isMatch) {
+                return done(null, user);
+            } else {
+                return done(null, false, { message: "Senha não está correta" });
             }
         } catch (err) {
             return done(err);
@@ -31,16 +31,20 @@ export default function initialize(passport) {
         passwordField: "password",
     }, authenticateUser));
 
-    passport.serializeUser((user, done) => done(null, user.id));
+    passport.serializeUser((user, done) => {
+        done(null, user.id);
+    });
 
     passport.deserializeUser(async (id, done) => {
         try {
             const user = await prisma.user.findUnique({
                 where: { id: id },
             });
-            return done(null, user);
+            done(null, user);
         } catch (err) {
-            return done(err);
+            done(err);
         }
     });
 }
+
+module.exports = initialize;

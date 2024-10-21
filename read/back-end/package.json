@@ -1,12 +1,10 @@
 {
   "name": "trabfaculdade",
   "version": "1.0.0",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./server.js",
     "serve": "concurrently \"npm run start\" \"npm run dev\"",
-    "build": "vite build",
     "lint": "eslint ."
   },
   "keywords": [],
