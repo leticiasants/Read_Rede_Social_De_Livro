@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
 export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +12,7 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
     const response = await fetch(`${SERVER_URL}/users/register`, {
       method: 'POST',
       headers: {
@@ -22,7 +22,8 @@ export default function Register() {
     });
 
     if (response.ok) {
-      navigate('/login');
+      console.log("indo pro login")
+      navigate('/');
     } else {
       const errorData = await response.json();
       console.log(errorData); 

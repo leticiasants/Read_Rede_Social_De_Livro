@@ -1,10 +1,10 @@
-const LocalStrategy = require('passport-local').Strategy;
-const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcrypt');
+import { Strategy as LocalStrategy } from 'passport-local';
+import { PrismaClient } from '@prisma/client'; 
+import bcrypt from 'bcrypt'; 
 
 const prisma = new PrismaClient();
 
-function initialize(passport) {
+function initializePassport(passport) {
     const authenticateUser = async (email, password, done) => {
         try {
             const user = await prisma.user.findUnique({
@@ -47,4 +47,4 @@ function initialize(passport) {
     });
 }
 
-module.exports = initialize;
+export default initializePassport;

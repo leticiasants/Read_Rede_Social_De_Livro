@@ -1,0 +1,13 @@
+{
+  "name": "trabfaculdade",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm run build --prefix front-end",
+    "dev": "concurrently \"npm run dev --prefix ./front-end\" \"npm run dev --prefix ./back-end\"",
+    "start": "concurrently \"npm start --prefix ./front-end\" \"npm start --prefix ./back-end\"",
+    "serve": "npm run build && npm start" 
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

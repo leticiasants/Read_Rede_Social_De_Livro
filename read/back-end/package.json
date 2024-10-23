@@ -1,10 +1,11 @@
 {
-  "name": "trabfaculdade",
+  "name": "trabfaculdade-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon ./server.js",
-    "serve": "concurrently \"npm run start\" \"npm run dev\"",
+    "dev": "nodemon server.js",
+    "start": "node server.js",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -12,9 +13,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^5.21.0",
+    "@prisma/client": "^5.21.1",
     "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-flash": "^0.0.2",
@@ -26,12 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "autoprefixer": "^10.4.20",
-    "concurrently": "^9.0.1",
-    "currently": "^0.0.8",
     "eslint": "^9.9.0",
-    "globals": "^15.9.0",
-    "nodemon": "^3.1.7",
-    "postcss": "^8.4.47"
+    "nodemon": "^3.1.7"
   }
 }
