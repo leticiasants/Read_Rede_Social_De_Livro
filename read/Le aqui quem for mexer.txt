@@ -1,0 +1,2 @@
+executar dentro da pasta read:
+    -npm run serve
