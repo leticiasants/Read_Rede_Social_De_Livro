@@ -1,13 +1,20 @@
 {
   "name": "trabfaculdade",
   "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "npm run build --prefix front-end",
     "dev": "concurrently \"npm run dev --prefix ./front-end\" \"npm run dev --prefix ./back-end\"",
     "start": "concurrently \"npm start --prefix ./front-end\" \"npm start --prefix ./back-end\"",
-    "serve": "npm run build && npm start" 
+    "serve": "npm run build && npm start"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
+  },
+  "dependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^10.8.2",
+    "selenium-webdriver": "^4.26.0"
   }
 }
