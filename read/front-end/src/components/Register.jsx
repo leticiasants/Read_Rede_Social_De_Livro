@@ -23,7 +23,7 @@ export default function Register() {
 
     if (response.ok) {
       console.log("indo pro login")
-      navigate('/');
+      navigate('/home');
     } else {
       const errorData = await response.json();
       console.log(errorData); 

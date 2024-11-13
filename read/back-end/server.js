@@ -9,6 +9,7 @@ import { PrismaClient } from '@prisma/client';
 import initializePassport from './passportConfig.js'; 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { env } from "process";
 
 const app = express();
 const prisma = new PrismaClient();
@@ -99,6 +100,9 @@ app.post('/users/register', async (req, res) => {
         let hashedPassword = await bcrypt.hash(password, 10);
         console.log("Senha depois de criptografar", {
             hashedPassword,
+        });
+        console.log("Senha depois de criptografar", {
+            env,
         });
         const existingUser = await prisma.user.findUnique({
             where: { email: email },

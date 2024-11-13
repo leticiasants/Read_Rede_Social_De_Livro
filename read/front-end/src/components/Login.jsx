@@ -18,12 +18,12 @@ export default function Login() {
         body: JSON.stringify(data)
       });
 
-      const result = await response.json();
-
       if (response.ok) {
-        alert(result.message);
+        console.log("indo pro login")
+        navigate('/home');
       } else {
-        alert(result.message);
+        const errorData = await response.json();
+        console.log(errorData); 
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
