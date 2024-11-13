@@ -38,7 +38,7 @@ export default function Register() {
       <form onSubmit={handleSubmit} className="w-92 grid grid-cols-2 gap-4 items-center">
         <div>
           <label
-            htmlFor="username"
+            htmlFor="username"        
             className="text-left text-slate-100 text-sm mb-1"
           >
             Username
@@ -46,6 +46,7 @@ export default function Register() {
           <input
             id="username"
             type="text"
+            name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="username"
@@ -63,6 +64,7 @@ export default function Register() {
           <input
             id="email"
             type="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="exemplo@email.com"
@@ -80,6 +82,7 @@ export default function Register() {
           <input
             id="password"
             type="password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="*******"
@@ -97,6 +100,7 @@ export default function Register() {
           <input
             id="passwordconfirm"
             type="password"
+            name="passwordconfirm"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="*******"
