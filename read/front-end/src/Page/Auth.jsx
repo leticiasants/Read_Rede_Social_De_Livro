@@ -5,8 +5,8 @@ import TabComponent from "../components/Tab";
 
 function Auth() {
   const tabsData = [
-    { label: "Login", content: <Login /> },
-    { label: "Register", content: <Register /> },
+    { label: "login", content: <Login /> },
+    { label: "register", content: <Register /> },
   ];
 
   return (

@@ -12,7 +12,8 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+    console.log(`A URL para o registro é: ${SERVER_URL}/users/register`);
+
     const response = await fetch(`${SERVER_URL}/users/register`, {
       method: 'POST',
       headers: {
@@ -23,7 +24,7 @@ export default function Register() {
 
     if (response.ok) {
       console.log("indo pro login")
-      navigate('/');
+      navigate('/login');
     } else {
       const errorData = await response.json();
       console.log(errorData); 
