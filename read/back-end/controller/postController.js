@@ -1,7 +1,23 @@
-// controlador de tudo que envolve a postagem
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
+
+export const LatestPost = async (req, res) => {
+    const userId = parseInt(req.params.userId, 10);
+    try {
+        const lastPost = await prisma.post.findFirst({
+            where: { userId: userId },
+            orderBy: { createdAt: 'desc' },
+        });
+        if (lastPost) {
+            res.json(lastPost);
+        } else {
+            res.status(404).json({ message: 'Post não encontrado.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao recuperar o último post.' });
+    }
+};
 
 export const createPost = async (req, res) => {
     const { content } = req.body;

@@ -1,5 +1,3 @@
-// aqui é o controlador de login e registro
-
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import passport from 'passport';
@@ -67,7 +65,13 @@ export const loginUser = (req, res, next) => {
             if (err) {
                 return res.status(500).json({ message: "Erro ao fazer login." });
             }
-            return res.status(200).json({ message: "Login realizado com sucesso!" });
+            console.log("Sessão do LOGIN: ", req.session);
+            return res.json({
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                message: 'Login realizado com sucesso!',
+            });
         });
     })(req, res, next);
 };
@@ -75,5 +79,5 @@ export const loginUser = (req, res, next) => {
 export const logoutUser = (req, res) => {
     req.logOut();
     req.flash('success_msg', "Você deslogou!");
-    res.redirect('/users/login');
+    res.redirect('users/login');
 };

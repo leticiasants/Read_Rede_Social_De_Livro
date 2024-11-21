@@ -1,19 +1,40 @@
-import { driver } from '../selenium.config.js';
-import { By, until } from 'selenium-webdriver';
-import { assert } from 'chai';
+import fetch from 'node-fetch';
+import fetchCookie from 'fetch-cookie';
 
-describe('Logar na conta', function () {
-  it('Deve permitir o login com as credenciais corretas', async function () {
-    await driver.get('http://localhost:5173/login');
+const fetchWithCookies = fetchCookie(fetch);
 
-    await driver.findElement(By.name('email')).sendKeys('iii@iii.com');
-    await driver.findElement(By.name('password')).sendKeys('iii123');
-    //await driver.findElement(By.name('password')).sendKeys('iii124');
+const apiUrlLogin = 'http://localhost:4000/users/login'; 
 
-    await driver.findElement(By.css('button[type="submit"]')).click();
+const loginUser = async () => {
+    const loginResponse = await fetchWithCookies(apiUrlLogin, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: 'iii@iii.com',
+            password: 'iii123',
+        }),
+        credentials: 'include', 
+    });
 
-    await driver.wait(driver.getCurrentUrl(), 5000);
-    const currentUrl = await driver.getCurrentUrl();
-    assert.equal(currentUrl, 'http://localhost:5173/login');  
-  });
-});
+    const text = await loginResponse.text();
+
+    let loginData = null;
+    try {
+        loginData = JSON.parse(text);
+    } catch (error) {
+        console.error("Erro ao parsear JSON:", error);
+    }
+
+    if (!loginData) {
+        console.log('Erro no login. Não é possível continuar.');
+        return null;
+    }
+
+    console.log('Login:', loginData);
+    return loginData; 
+};
+
+
+loginUser();

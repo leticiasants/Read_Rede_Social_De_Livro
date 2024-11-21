@@ -1,0 +1,94 @@
+cronograma e percentuais
+
+	Fase de Prospecção (100% concluída)
+	Fase de Análise (50% concluída)
+	Fase de Planejamento (100% concluída)
+	Fase de Implementação (25% concluída)
+	Fase de Teste (0% concluída)
+	Fase de Fechamento (0% concluída)
+
+Esforço Real (AC - Actual Cost)
+
+Fase de Prospecção (100% concluída):
+Custo Total Real: R$2.400
+
+Fase de Análise (50% concluída):
+	Custo Total Real = (PO + Desenvolvedor Jr + Testador) * 50%
+	PO: 28 horas × R$60 = R$1.680
+	Desenvolvedor Jr: 28 horas × R$40 = R$1.120
+	Testador: 28 horas × R$35 = R$980 Custo Total Real: R$3.780
+
+Fase de Planejamento (100% concluída):
+	Custo Total Real: R$4.320
+
+Fase de Implementação (25% concluída):
+	Custo Total Real = (PO + Desenvolvedor Jr + Testador) * 25%
+	PO: 46,175 horas × R$60 = R$2.770,5
+	Desenvolvedor Jr: 46,175 horas × R$40 = R$1.847
+	Testador: 46,175 horas × R$35 = R$1.615,125 Custo Total Real: R$6.232,625
+	Total AC (esforço real acumulado): AC = 2400 + 3780 + 4320 + 6232,625 = R$16.732,625
+
+PV:
+
+
+Fase de Prospecção (100%):
+	PV = R$2.400
+
+Fase de Análise (50%):
+	PV = R$7.560 × 50% = R$3.780
+
+Fase de Planejamento (100%):
+	PV = R$4.320
+
+Fase de Implementação (25%):
+	PV = R$24.934,5 × 25% = R$6.233,625
+
+Total PV acumulado até o 5º dia: PV = 2400 + 3780 + 4320 + 6233,625 = R$16.733,625
+
+EV:
+
+Fase de Prospecção (100%):
+	EV = R$2.400
+
+Fase de Análise (50%):
+	EV = R$7.560 × 50% = R$3.780
+
+Fase de Planejamento (100%):
+	EV = R$4.320
+
+Fase de Implementação (25%):
+	EV = R$24.934,5 × 25% = R$6.233,625
+
+Total EV acumulado até o 5º dia: EV = 2400 + 3780 + 4320 + 6233,625 = R$16.733,625
+
+
+5. Cálculo do CPI (Cost Performance Index)
+	CPI = EV / AC CPI = 16.733,625 / 16.732,625 = 1,00006 
+
+6. Cálculo do SPI (Schedule Performance Index)
+	SPI = EV / PV SPI = 16.733,625 / 16.733,625 = 1,00
+
+7. Cálculo do EAC (Estimate at Completion)
+	EAC = BAC / CPI BAC = Custo Total do Projeto = R$46.954,5 EAC = 46.954,5 / 1,00006 = R$46.951,7
+
+8. Cálculo do TAC (Time at Completion)
+Como o SPI é 1, o projeto está seguindo o cronograma, então o prazo final estimado permanece o mesmo.
+
+BAC(Budget at Completion)
+Fase de Prospecção: R$2.400
+Fase de Análise: R$7.560
+Fase de Planejamento: R$4.320
+Fase de Implementação: R$24.934,5
+Fase de Teste: R$3.420
+Fase de Fechamento: R$4.320
+
+BAC = 2.400 + 7.560 + 4.320 + 24.934,5 + 3.420 + 4.320 = R$46.954,5
+
+PAC (Plan at Completion)
+Fase de Prospecção: 20 horas
+Fase de Análise: 56 horas
+Fase de Planejamento: 36 horas
+Fase de Implementação: 184,7 horas
+Fase de Teste: 36 horas
+Fase de Fechamento: 36 horas
+PAC = 20 + 56 + 36 + 184,7 + 36 + 36 = 368,7 horas

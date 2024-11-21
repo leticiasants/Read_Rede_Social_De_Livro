@@ -1,0 +1,30 @@
+Requisitos Funcionais:
+[RSF01] Criar Usuário: Médio (2 PCU) – Envolve Usuário, sistema e regras de autenticação.
+[RSF02] Remover Usuário: Médio (1 PCU) – Envolve Usuário, Moderador e/ou Admin.
+[RSF03] Editar Usuário: Médio (1 PCU) – Envolve Usuário e sistema.
+[RSF04] Login do Usuário: Médio (1 PCU) – Envolve Usuário e sistema.
+[RSF05] Logoff Usuário: Simples (1 PCU).
+[RSF06] Adicionar livro à lista: Médio (4 PCU) – Envolve Usuário e API.
+[RSF07] Avaliar Livro: Simples (4 PCU).
+[RSF08] Comentar Livro: Simples (2 PCU).
+[RSF09] Buscar Livros: Médio (1 PCU) – Envolve integração com API.
+[RSF10] Deletar Livro da Lista: Simples (1 PCU).
+[RSF11] Editar Avaliações de Livros: Simples (2 PCU).
+[RSF12] Criar Publicação: Médio (4 PCU).
+[RSF13] Deletar Publicação: Simples (1 PCU).
+[RSF14] Editar Publicação: Simples (2 PCU).
+[RSF15] Criar Comentário em Publicação: Simples (4 PCU).
+[RSF16] Deletar Comentário em Publicação: Simples (1 PCU).
+[RSF17] Editar Comentário em Publicação: Simples (1 PCU).
+[RSF18] Seguir Amigos: Médio (2 PCU).
+[RSF19] Chat entre Usuários: Médio (4 PCU).
+[RSF20] Adicionar ao Grupo de Leitura: Médio (4 PCU).
+[RSF21] Remover do Grupo de Leitura: Simples (2 PCU).
+[RSF22] Moderação de Conteúdo: Médio (4 PCU) – Envolve Moderador e sistema.
+[RSF23] Dar Milestones: Complexo (8 PCU) - Envolve Usuário e sistema.
+
+Total de PCUs=2+1+1+1+1+4+4+2+1+1+2+4+1+2+4+1+1+2+4+4+2+4+8= 57 PCUs
+FT: 1,2
+FE: 0,9
+
+Esforço Total= 57×1,2×0,9×3 = 184,7 horas

@@ -1,0 +1,80 @@
+﻿Cálculo do cronograma
+Distribuição do Esforço por Fase:
+
+
+Fase de Prospecção: 5% do esforço total
+Esforço: 369.4×0.05= 20 horas
+
+
+Fase de Análise: 15% do esforço total
+Esforço: 369,4×0.15= 56 horas
+
+
+Fase de Planejamento: 10% do esforço total
+Esforço: 369,4×0.10= 36 horas
+
+
+Fase de Implementação: 50% do esforço total
+Esforço: 369,4×0.50= 184.7 horas
+
+
+Fase de Teste: 10% do esforço total
+Esforço: 369,4×0.10= 36 horas
+
+
+Fase de Fechamento: 10% do esforço total
+Esforço: 369,4×0.10= 36 horas
+
+
+Alocação dos Profissionais
+        Desenvolvedor Jr: R$40/h
+        Testador: R$35/h
+        Product Owner (PO): R$60/h
+        Scrum Master (SM): R$60/h
+
+
+Cronograma do Projeto
+* Fase de Prospecção (20 horas): PO + Scrum Master
+* Fase de Análise (56 horas): PO + Desenvolvedor Jr + Testador
+* Fase de Planejamento (36 horas): PO + Scrum Master
+* Fase de Implementação (184,7 horas): Desenvolvedor Jr + Testador + PO
+* Fase de Teste (36 horas): Testador + PO
+* Fase de Fechamento (36 horas): Scrum Master + PO
+Vamos calcular o custo total com essa distribuição:
+1. Fase de Prospecção: 20 horas
+* PO: 20 horas × R$60 = R$1.200
+* Scrum Master: 20 horas × R$60 = R$1.200
+Custo total: R$2.400
+2. Fase de Análise: 56 horas
+   * PO: 56 horas × R$60 = R$3.360
+   * Desenvolvedor Jr: 56 horas × R$40 = R$2.240
+   * Testador: 56 horas × R$35 = R$1.960
+Custo total: R$7.560
+3. Fase de Planejamento: 36 horas
+      * PO: 36 horas × R$60 = R$2.160
+      * Scrum Master: 36 horas × R$60 = R$2.160
+Custo total: R$4.320
+4. Fase de Implementação: 184,7 horas
+         * PO: 184,7 horas × R$60 = R$11.082
+         * Desenvolvedor Jr: 184,7 horas × R$40 = R$7.388
+         * Testador: 184,7 horas × R$35 = R$6.464,5
+Custo total: R$24.934,5
+5. Fase de Teste: 36 horas
+            * PO: 36 horas × R$60 = R$2.160
+            * Testador: 36 horas × R$35 = R$1.260
+Custo total: R$3.420
+6. Fase de Fechamento: 36 horas
+               * PO: 36 horas × R$60 = R$2.160
+               * Scrum Master: 36 horas × R$60 = R$2.160
+Custo total: R$4.320
+________________
+
+
+Custo Total por Fases:
+                  * Fase de Prospecção: R$2.400
+                  * Fase de Análise: R$7.560
+                  * Fase de Planejamento: R$4.320
+                  * Fase de Implementação: R$24.934,5
+                  * Fase de Teste: R$3.420
+                  * Fase de Fechamento: R$4.320
+Custo Total Geral: R$46.954,5

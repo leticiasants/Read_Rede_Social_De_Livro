@@ -32,16 +32,26 @@ function initializePassport(passport) {
     }, authenticateUser));
 
     passport.serializeUser((user, done) => {
+        console.log('Serializando usuário:', user.id);
+        console.log("\n \n USUARIO A SER SERIALIZADO", user)
         done(null, user.id);
     });
 
     passport.deserializeUser(async (id, done) => {
+        console.log('entrou na deserialização:', id);
         try {
             const user = await prisma.user.findUnique({
                 where: { id: id },
+                select: { id: true, email: true, username: true } // Garanta que as informações mínimas sejam retornadas
             });
-            done(null, user);
+            if (user) {
+                console.log('Usuário desserializado:', user);
+                done(null, user);
+            } else {
+                done(null, false, { message: 'Usuário não encontrado' });
+            }
         } catch (err) {
+            console.error('Erro ao desserializar usuário:', err);
             done(err);
         }
     });
