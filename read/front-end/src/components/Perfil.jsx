@@ -76,7 +76,7 @@ export default function Perfil() {
         try {
             const response = await fetch('http://localhost:4000/users/delete', {
                 method: 'DELETE',
-                credentials: 'include',
+                credentials: 'include', // se for mexer mantem isso, é necessario para mandar os cookies
             });
     
             const result = await response.json();
@@ -105,10 +105,11 @@ export default function Perfil() {
                 password: newPassword, 
                 biography: biografia,
             }),
-            credentials: 'include',
+            credentials: 'include', // se for mexer mantem isso, é necessario para mandar os cookies
         });
 
         const result = await response.json();
+        console.log("\n \n \n result ok? :", result);
         if (response.ok) {
             alert('Alterações salvas!');
             setOriginalUsername(username);
@@ -116,7 +117,6 @@ export default function Perfil() {
             setOriginalBiografia(biografia);
             setOriginalNewPassword(newPassword);
             closeEditModal();
-            window.location.reload();
         } else {
             alert(result.message || 'Erro ao salvar alterações.');
         }
@@ -125,28 +125,6 @@ export default function Perfil() {
             alert('Erro ao salvar alterações.');
         }
     };
-
-    const handleLogout = () => {
-        navigate('/login'); 
-    };
-
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
-
-    // Fechar modal ao clicar fora
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
-                setIsModalOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     return (
         <>
@@ -159,49 +137,20 @@ export default function Perfil() {
                         <div className='w-11/12 ml-4'>
                             <p className="ml-4 text-2xl text-slate-100">{username}</p>
                             <div className='ml-4 mt-4 text-slate-100'>
-                                {biografia}
+                                Biografia: <br /> {biografia}
                             </div>
                         </div>
                     </section>
-
-                    {/* Botão com "+" dentro de um círculo branco */}
-                    <div 
-                        ref={buttonRef} 
-                        className="absolute top-8 right-8 bg-[#f1eeee] w-16 h-16 rounded-full flex items-center justify-center cursor-pointer" 
-                        onClick={toggleModal}>
-                        <span className="text-[#081738] text-4xl">+</span>
-                    </div>
+                    <section className='flex ml-36 mt-8 -mb-4'>
+                        <p className='text-slate-100 mr-4 cursor-pointer' onClick={openEditModal}>Editar</p>
+                        <p className='text-slate-100 cursor-pointer' onClick={openDeleteModal}>Deletar</p>
+                    </section>
                 </div>
             </header>
+            <main>
+                AS PUBLICAÇÕES VÃO VIR AQUI
+            </main>
 
-            {/* Modal com as opções */}
-            {isModalOpen && (
-                <div 
-                    ref={modalRef} 
-                    className="absolute top-14 right-28 bg-[#1b3366] p-4 rounded-lg shadow-lg w-52 z-50">
-                    <div className="flex flex-col items-start">
-                        <button onClick={() => navigate('/feed')} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
-                            <img className='w-4 mr-2' src={imgFeed} alt="Feed Image" />
-                            Feed
-                        </button>
-                        <button onClick={openEditModal} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
-                            <img className='w-4 mr-2' src={imgEdit} alt="Edit Image" />
-                            Editar
-                        </button>
-                        <button onClick={handleLogout} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
-                            <img className='w-4 mr-2' src={imgLogOff} alt="LogOff Image" />
-                            Sair
-                        </button>
-                        <button onClick={openDeleteModal} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
-                            <img className='w-4 mr-2' src={imgDelete} alt="Delete Image" />
-                            Deletar
-                        </button>
-                    </div>
-
-                </div>
-            )}
-
-            {/* Modal para Deletar Perfil */}
             {isDeleteModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg w-80">
@@ -222,7 +171,6 @@ export default function Perfil() {
                 </div>
             )}
 
-            {/* Modal para Editar Perfil */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg w-96">
@@ -236,9 +184,11 @@ export default function Perfil() {
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md"
+                                    placeholder="Digite seu nome de usuário"
                                 />
                             </div>
+
                             <div className="mb-4">
                                 <label className="block text-sm text-black mb-2" htmlFor="email">Email</label>
                                 <input 
@@ -246,39 +196,43 @@ export default function Perfil() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md"
+                                    placeholder="Digite seu e-mail"
                                 />
                             </div>
+
                             <div className="mb-4">
-                                <label className="block text-sm text-black mb-2" htmlFor="biografia">Biografia</label>
-                                <textarea
-                                    id="biografia"
-                                    value={biografia}
-                                    onChange={(e) => setBiografia(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-sm text-black mb-2" htmlFor="password">Nova Senha</label>
+                                <label className="block text-sm text-black mb-2" htmlFor="newPassword">Nova Senha</label>
                                 <input 
-                                    id="password"
+                                    id="newPassword"
                                     type="password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md"
+                                    placeholder="Digite sua nova senha"
                                 />
                             </div>
+
+                            <div className="mb-4">
+                                <label className="block text-sm text-black mb-2" htmlFor="biografia">Biografia</label>
+                                <textarea 
+                                    id="biografia"
+                                    value={biografia}
+                                    onChange={(e) => setBiografia(e.target.value)}
+                                    className="w-full px-4 py-2 border rounded-md"
+                                    placeholder="Conte um pouco sobre você"
+                                />
+                            </div>
+
                             <div className="flex justify-between">
                                 <button 
-                                    type="button" 
-                                    onClick={handleSaveEdit}
+                                    onClick={handleSaveEdit} 
                                     className="bg-[#081738] text-white px-4 py-2 rounded-md">
                                     Salvar
                                 </button>
                                 <button 
-                                    type="button" 
                                     onClick={closeEditModal} 
-                                    className="bg-[#c72137] text-white px-4 py-2 rounded-md">
+                                    className="bg-gray-500 text-white px-4 py-2 rounded-md">
                                     Cancelar
                                 </button>
                             </div>

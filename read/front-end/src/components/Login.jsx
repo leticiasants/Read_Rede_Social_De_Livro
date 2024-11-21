@@ -27,8 +27,8 @@ export default function Login() {
       const result = await response.json();
 
       if (response.ok) {
-        // alert(result.message);
-        navigate('/feed');
+        alert(result.message);
+        navigate('/perfil');
       } else {
         alert(result.message);
       }
