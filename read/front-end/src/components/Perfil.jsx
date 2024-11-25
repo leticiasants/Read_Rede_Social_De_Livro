@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
+import Publications from './Publication';
 import imgBook from '../assets/book.svg';
+import imgEdit from '../assets/edit.svg';
+import imgLogOff from '../assets/logoff.svg';
+import imgDelete from '../assets/delete.svg';
 
 export default function Perfil() {
+    const navigate = useNavigate();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     
@@ -66,7 +72,7 @@ export default function Perfil() {
         try {
             const response = await fetch('http://localhost:4000/users/delete', {
                 method: 'DELETE',
-                credentials: 'include', // se for mexer mantem isso, é necessario para mandar os cookies
+                credentials: 'include',
             });
     
             const result = await response.json();
@@ -95,11 +101,10 @@ export default function Perfil() {
                 password: newPassword, 
                 biography: biografia,
             }),
-            credentials: 'include', // se for mexer mantem isso, é necessario para mandar os cookies
+            credentials: 'include',
         });
 
         const result = await response.json();
-        console.log("\n \n \n result ok? :", result);
         if (response.ok) {
             alert('Alterações salvas!');
             setOriginalUsername(username);
@@ -107,6 +112,7 @@ export default function Perfil() {
             setOriginalBiografia(biografia);
             setOriginalNewPassword(newPassword);
             closeEditModal();
+            window.location.reload();
         } else {
             alert(result.message || 'Erro ao salvar alterações.');
         }
@@ -114,6 +120,10 @@ export default function Perfil() {
             console.error('Erro ao atualizar perfil:', error);
             alert('Erro ao salvar alterações.');
         }
+    };
+
+    const handleLogout = () => {
+        navigate('/login'); 
     };
 
     return (
@@ -127,18 +137,28 @@ export default function Perfil() {
                         <div className='w-11/12 ml-4'>
                             <p className="ml-4 text-2xl text-slate-100">{username}</p>
                             <div className='ml-4 mt-4 text-slate-100'>
-                                Biografia: <br /> {biografia}
+                                {biografia}
                             </div>
                         </div>
                     </section>
                     <section className='flex ml-36 mt-8 -mb-4'>
-                        <p className='text-slate-100 mr-4 cursor-pointer' onClick={openEditModal}>Editar</p>
-                        <p className='text-slate-100 cursor-pointer' onClick={openDeleteModal}>Deletar</p>
+                        <p className='text-slate-100 -ml-2 mr-5 cursor-pointer flex items-center' onClick={openEditModal}>
+                            <img className='w-4 mt-px mr-1' src={imgEdit} alt="Edit Image" />
+                            Editar
+                        </p>
+                        <p className='text-slate-100 mr-5 cursor-pointer flex items-center' onClick={handleLogout}>
+                            <img className='w-4 mt-px mr-1' src={imgLogOff} alt="LogOff Image" />
+                            Sair
+                        </p>
+                        <p className='text-slate-100 cursor-pointer flex items-center' onClick={openDeleteModal}>
+                            <img className='w-4 mt-px mr-1' src={imgDelete} alt="Delete Image" />
+                            Deletar
+                        </p>
                     </section>
                 </div>
             </header>
             <main>
-                AS PUBLICAÇÕES VÃO VIR AQUI
+                <Publications />
             </main>
 
             {isDeleteModalOpen && (
@@ -216,13 +236,15 @@ export default function Perfil() {
 
                             <div className="flex justify-between">
                                 <button 
+                                    type="button"
                                     onClick={handleSaveEdit} 
                                     className="bg-[#081738] text-white px-4 py-2 rounded-md">
                                     Salvar
                                 </button>
                                 <button 
+                                    type="button"
                                     onClick={closeEditModal} 
-                                    className="bg-gray-500 text-white px-4 py-2 rounded-md">
+                                    className="bg-[#c72137] text-white px-4 py-2 rounded-md">
                                     Cancelar
                                 </button>
                             </div>

@@ -59,7 +59,7 @@ export const loginUser = (req, res, next) => {
             return res.status(500).json({ message: "Erro ao autenticar." });
         }
         if (!user) {
-            return res.status(401).json({ message: "Email ou senha incorretos." });
+            return res.status(401).json({ message: "Email ou senha incorretos."});
         }
         req.logIn(user, (err) => {
             if (err) {

@@ -27,7 +27,7 @@ export default function Login() {
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message);
+        // alert(result.message);
         navigate('/perfil');
       } else {
         alert(result.message);

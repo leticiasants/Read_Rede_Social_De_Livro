@@ -8,7 +8,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Auth />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<Auth />} />
       <Route path="/register" element={<Register />} />
       <Route path="/perfil" element={<Perfil />} />
     </Routes>
