@@ -29,18 +29,20 @@ export default function Publications() {
     return (
         <div className="p-8">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-800">Publicações</h2>
-                <button
-                    onClick={handleOpenForm}
-                    className="bg-[#081738] text-white px-4 py-2 rounded-md shadow hover:bg-[#193778] transition"
-                >
-                    + Add Publicação
-                </button>
+                {/* Campo de entrada estilizado como um botão */}
+                {!isFormOpen && (
+                    <div 
+                        onClick={handleOpenForm}
+                        className="w-full bg-[#f1f1f1] border border-gray-300 text-gray-600 p-3 rounded-md cursor-pointer text-center shadow-md hover:bg-[#e0e0e0] transition mx-auto"
+                    >
+                        Adicionar publicação...
+                    </div>
+                )}
             </div>
 
             {isFormOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg w-96 shadow-lg">
+                    <div className="bg-white p-6 rounded-lg w-[95%] sm:w-[400px] shadow-lg">
                         <h3 className="text-lg font-bold text-gray-800 mb-4">Adicionar Publicação</h3>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
@@ -52,7 +54,7 @@ export default function Publications() {
                                     type="text"
                                     value={bookName}
                                     onChange={(e) => setBookName(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md text-sm"
                                     required
                                 />
                             </div>
@@ -66,7 +68,7 @@ export default function Publications() {
                                     type="text"
                                     value={authorName}
                                     onChange={(e) => setAuthorName(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md text-sm"
                                     required
                                 />
                             </div>
@@ -79,7 +81,7 @@ export default function Publications() {
                                     id="readingStatus"
                                     value={readingStatus}
                                     onChange={(e) => setReadingStatus(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md text-sm"
                                     required
                                 >
                                     <option value="">Selecione</option>
@@ -97,24 +99,24 @@ export default function Publications() {
                                     id="publicationContent"
                                     value={publicationContent}
                                     onChange={(e) => setPublicationContent(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
+                                    className="w-full px-4 py-2 border rounded-md text-sm"
                                     rows="4"
                                     placeholder="Escreva sua publicação aqui..."
                                     required
                                 />
                             </div>
 
-                            <div className="flex justify-between">
+                            <div className="flex justify-between mt-4">
                                 <button
                                     type="submit"
-                                    className="bg-[#081738] text-white px-4 py-2 rounded-md shadow hover:bg-[#193778] transition"
+                                    className="bg-[#081738] text-white px-4 py-2 rounded-md shadow hover:bg-[#193778] transition text-sm"
                                 >
                                     Salvar
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleCloseForm}
-                                    className="bg-gray-400 text-white px-4 py-2 rounded-md shadow hover:bg-gray-500 transition"
+                                    className="bg-gray-400 text-white px-4 py-2 rounded-md shadow hover:bg-gray-500 transition text-sm"
                                 >
                                     Cancelar
                                 </button>
@@ -123,11 +125,6 @@ export default function Publications() {
                     </div>
                 </div>
             )}
-
-            <div className="bg-gray-100 p-4 rounded-md shadow">
-                <p className="text-gray-600">Nenhuma publicação encontrada.</p>
-                {/* Exibir lista de publicações no futuro */}
-            </div>
         </div>
     );
 }
