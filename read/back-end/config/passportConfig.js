@@ -36,7 +36,7 @@ function initializePassport(passport) {
         console.log("\n \n USUARIO A SER SERIALIZADO", user)
         done(null, user.id);
     });
-
+/*
     passport.deserializeUser(async (id, done) => {
         console.log('entrou na deserialização:', id);
         try {
@@ -53,6 +53,36 @@ function initializePassport(passport) {
         } catch (err) {
             console.error('Erro ao desserializar usuário:', err);
             done(err);
+        }
+    });
+*/
+
+    passport.deserializeUser(async (id, done) => { 
+        console.log('Entrei na deserialização, ID:', id);
+        
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: id },
+                include: {
+                    posts: {
+                        include: {
+                            book: true,
+                            comments: true
+                        }
+                    }
+                }
+            });
+
+            if (user) {
+                console.log('Usuário desserializado com sucesso:', user);
+                done(null, user); // Não há erro, passa o usuário
+            } else {
+                console.log('Usuário não encontrado, ID:', id);
+                done(null, false, { message: 'Usuário não encontrado' }); // Usuário não encontrado
+            }
+        } catch (err) {
+            console.error('Erro ao desserializar usuário:', err);
+            done(err); // Passa erro caso algo ocorra
         }
     });
 }

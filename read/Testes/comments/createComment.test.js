@@ -13,8 +13,8 @@ const loginUser = async () => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            email: 'iii@iii.com',
-            password: 'iii123',
+            email: 'ccc@ccc.com',
+            password: 'ccc123',
         }),
         credentials: 'include',
     });
@@ -60,7 +60,7 @@ const testCreateComment = async () => {
     const userData = await loginUser();
     console.log("usuario logou");
     if (userData) {
-        await createComment(9, 'iii tambem comenta no post do jjj');
+        await createComment(2, 'ccc tambem comenta no post do aaa sobre um livro');
     } else {
         console.log('Erro no login. Não é possível criar comentário.');
     }
