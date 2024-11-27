@@ -28,7 +28,7 @@ export default function Login() {
 
       if (response.ok) {
         // alert(result.message);
-        navigate('/perfil');
+        navigate('/feed');
       } else {
         alert(result.message);
       }

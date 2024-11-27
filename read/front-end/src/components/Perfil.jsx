@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import Publications from './Publication';
 import imgBook from '../assets/book.svg';
 import imgEdit from '../assets/edit.svg';
 import imgLogOff from '../assets/logoff.svg';
 import imgDelete from '../assets/delete.svg';
+import imgFeed from '../assets/feed.svg';
 
 export default function Perfil() {
     const navigate = useNavigate();
+    const modalRef = useRef(null);  // Ref para o modal
+    const buttonRef = useRef(null); // Ref para o botão "+"
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [biografia, setBiografia] = useState('');
@@ -126,6 +130,24 @@ export default function Perfil() {
         navigate('/login'); 
     };
 
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
+    // Fechar modal ao clicar fora
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (modalRef.current && !modalRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
+                setIsModalOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <>
             <header>
@@ -141,26 +163,45 @@ export default function Perfil() {
                             </div>
                         </div>
                     </section>
-                    <section className='flex ml-36 mt-8 -mb-4'>
-                        <p className='text-slate-100 -ml-2 mr-5 cursor-pointer flex items-center' onClick={openEditModal}>
-                            <img className='w-4 mt-px mr-1' src={imgEdit} alt="Edit Image" />
-                            Editar
-                        </p>
-                        <p className='text-slate-100 mr-5 cursor-pointer flex items-center' onClick={handleLogout}>
-                            <img className='w-4 mt-px mr-1' src={imgLogOff} alt="LogOff Image" />
-                            Sair
-                        </p>
-                        <p className='text-slate-100 cursor-pointer flex items-center' onClick={openDeleteModal}>
-                            <img className='w-4 mt-px mr-1' src={imgDelete} alt="Delete Image" />
-                            Deletar
-                        </p>
-                    </section>
+
+                    {/* Botão com "+" dentro de um círculo branco */}
+                    <div 
+                        ref={buttonRef} 
+                        className="absolute top-8 right-8 bg-[#f1eeee] w-16 h-16 rounded-full flex items-center justify-center cursor-pointer" 
+                        onClick={toggleModal}>
+                        <span className="text-[#081738] text-4xl">+</span>
+                    </div>
                 </div>
             </header>
-            <main>
-                <Publications />
-            </main>
 
+            {/* Modal com as opções */}
+            {isModalOpen && (
+                <div 
+                    ref={modalRef} 
+                    className="absolute top-14 right-28 bg-[#1b3366] p-4 rounded-lg shadow-lg w-52 z-50">
+                    <div className="flex flex-col items-start">
+                        <button onClick={() => navigate('/feed')} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
+                            <img className='w-4 mr-2' src={imgFeed} alt="Feed Image" />
+                            Feed
+                        </button>
+                        <button onClick={openEditModal} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
+                            <img className='w-4 mr-2' src={imgEdit} alt="Edit Image" />
+                            Editar
+                        </button>
+                        <button onClick={handleLogout} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
+                            <img className='w-4 mr-2' src={imgLogOff} alt="LogOff Image" />
+                            Sair
+                        </button>
+                        <button onClick={openDeleteModal} className="text-[#f1eeee] py-2 px-4 mb-2 w-full text-left flex items-center">
+                            <img className='w-4 mr-2' src={imgDelete} alt="Delete Image" />
+                            Deletar
+                        </button>
+                    </div>
+
+                </div>
+            )}
+
+            {/* Modal para Deletar Perfil */}
             {isDeleteModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg w-80">
@@ -181,6 +222,7 @@ export default function Perfil() {
                 </div>
             )}
 
+            {/* Modal para Editar Perfil */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg w-96">
@@ -194,11 +236,9 @@ export default function Perfil() {
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
-                                    placeholder="Digite seu nome de usuário"
+                                    className="w-full p-2 border border-gray-300 rounded-md"
                                 />
                             </div>
-
                             <div className="mb-4">
                                 <label className="block text-sm text-black mb-2" htmlFor="email">Email</label>
                                 <input 
@@ -206,43 +246,37 @@ export default function Perfil() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
-                                    placeholder="Digite seu e-mail"
+                                    className="w-full p-2 border border-gray-300 rounded-md"
                                 />
                             </div>
-
-                            <div className="mb-4">
-                                <label className="block text-sm text-black mb-2" htmlFor="newPassword">Nova Senha</label>
-                                <input 
-                                    id="newPassword"
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
-                                    placeholder="Digite sua nova senha"
-                                />
-                            </div>
-
                             <div className="mb-4">
                                 <label className="block text-sm text-black mb-2" htmlFor="biografia">Biografia</label>
-                                <textarea 
+                                <textarea
                                     id="biografia"
                                     value={biografia}
                                     onChange={(e) => setBiografia(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-md"
-                                    placeholder="Conte um pouco sobre você"
+                                    className="w-full p-2 border border-gray-300 rounded-md"
                                 />
                             </div>
-
+                            <div className="mb-4">
+                                <label className="block text-sm text-black mb-2" htmlFor="password">Nova Senha</label>
+                                <input 
+                                    id="password"
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
                             <div className="flex justify-between">
                                 <button 
-                                    type="button"
-                                    onClick={handleSaveEdit} 
+                                    type="button" 
+                                    onClick={handleSaveEdit}
                                     className="bg-[#081738] text-white px-4 py-2 rounded-md">
                                     Salvar
                                 </button>
                                 <button 
-                                    type="button"
+                                    type="button" 
                                     onClick={closeEditModal} 
                                     className="bg-[#c72137] text-white px-4 py-2 rounded-md">
                                     Cancelar
