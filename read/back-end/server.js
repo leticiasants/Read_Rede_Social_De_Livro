@@ -12,6 +12,7 @@ import initializePassport from './config/passportConfig.js';
 import authRoutes from './routes/authRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
+import listRoutes from './routes/listRoutes.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -46,6 +47,7 @@ app.use(flash());
 app.use('/users', authRoutes);  
 app.use('/posts', postRoutes); 
 app.use('/posts/:postId/comments', commentRoutes); 
+app.use('/books', listRoutes);
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../front-end/dist', 'index.html')); 

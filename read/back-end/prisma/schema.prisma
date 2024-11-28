@@ -16,19 +16,23 @@ model User {
   biography String?   
   posts     Post[]     //relacionamento do usuario com post
   comments  Comment[]  //relacionamento do usuario com comentario
+  readBooks   ReadBooks[]   @relation("UserReadBooks")
+  readingBooks ReadingBooks[] @relation("UserReadingBooks")
+  toReadBooks ToReadBooks[] @relation("UserToReadBooks")
   @@map("User")
 }
 
-
 model Post {
-  id        Int     @id @default(autoincrement())
-  content   String  //Conteudo
-  createdAt DateTime @default(now())  // Data de criação do post
-  updatedAt DateTime @updatedAt       // Data da última atualização
-  userId    Int
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)  
-
-  comments  Comment[]  // Relacionamento do post com comentario
+  id            Int      @id @default(autoincrement())
+  content       String   // Conteúdo do post
+  statusLeitura String   // Status de leitura (Lido, Lendo, Vou ler)
+  createdAt     DateTime @default(now())  // Data de criação
+  updatedAt     DateTime @updatedAt       // Data da última atualização
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)  
+  bookId        Int?     // ID do livro (opcional)
+  book          Books?   @relation(fields: [bookId], references: [id]) // Relacionamento com a tabela Books
+  comments      Comment[] // Relacionamento do post com comentários
 }
 
 model Comment {
@@ -39,4 +43,57 @@ model Comment {
   userId    Int     
   post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade) // Relacionamento do comentario com post
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade) // Relacionamento do comentario com o user
+}
+
+model Books {
+  id            Int      @id @default(autoincrement())
+  googleId      String   @unique // ID único do Google Books
+  title         String   // Título
+  subtitle      String?  // Subtítulo
+  description   String?  // Descrição
+  authors       String[] // Autores (array de strings)
+  publisher     String?  // Editora
+  pageCount     Int?     // Número de páginas
+  categories    String[] // Categorias (array de strings)
+  averageRating Float?   // Avaliação média
+  ratingsCount  Int?     // Contagem de avaliações
+  language      String?  // Idioma
+  thumbnail     String?  // URL da imagem de capa
+  posts         Post[]   // Relacionamento com posts
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  readBooks     ReadBooks[]    @relation("BookReadBooks")
+  readingBooks  ReadingBooks[] @relation("BookReadingBooks")
+  toReadBooks   ToReadBooks[]  @relation("BookToReadBooks")
+  
+}
+
+model ReadBooks {
+  userId    Int
+  bookId    Int
+  user      User   @relation("UserReadBooks", fields: [userId], references: [id], onDelete: Cascade)
+  book      Books  @relation("BookReadBooks", fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, bookId])  // Chave primária composta
+}
+
+model ReadingBooks {
+  userId    Int
+  bookId    Int
+  user      User   @relation("UserReadingBooks", fields: [userId], references: [id], onDelete: Cascade)
+  book      Books  @relation("BookReadingBooks", fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, bookId])  // Chave primária composta
+}
+
+model ToReadBooks {
+  userId    Int
+  bookId    Int
+  user      User   @relation("UserToReadBooks", fields: [userId], references: [id], onDelete: Cascade)
+  book      Books  @relation("BookToReadBooks", fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, bookId])  // Chave primária composta
 }

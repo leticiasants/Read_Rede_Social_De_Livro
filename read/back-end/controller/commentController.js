@@ -1,20 +1,16 @@
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-
 export const createComment = async (req, res) => {
-    console.log('Parâmetros:', req.params);
-    console.log('Corpo da requisição:', req.body);
-    
-    const { postId } = req.params;  
-    const { content } = req.body;   
+    const { postId } = req.params;
+    const { content } = req.body;
 
     try {
         const newComment = await prisma.comment.create({
             data: {
                 content,
-                postId: parseInt(postId),  
-                userId: req.user.id,       
+                postId: parseInt(postId),
+                userId: req.user.id,
             },
         });
         res.status(201).json(newComment);
@@ -24,8 +20,8 @@ export const createComment = async (req, res) => {
 };
 
 export const editComment = async (req, res) => {
-    const { postId, commentId } = req.params;  // IDs de post e comentário
-    const { content } = req.body;               
+    const { commentId } = req.params; 
+    const { content } = req.body;
 
     try {
         const comment = await prisma.comment.findUnique({
@@ -34,11 +30,6 @@ export const editComment = async (req, res) => {
 
         if (!comment) {
             return res.status(404).json({ error: 'Comentário não encontrado.' });
-        }
-
-        // Verifica se o comentário pertence ao post e se o usuário tem permissão
-        if (comment.postId !== parseInt(postId)) {
-            return res.status(400).json({ error: 'Comentário não pertence ao post especificado.' });
         }
 
         const updatedComment = await prisma.comment.update({
@@ -52,9 +43,8 @@ export const editComment = async (req, res) => {
     }
 };
 
-// Função para deletar um comentário específico de um post
 export const deleteComment = async (req, res) => {
-    const { postId, commentId } = req.params;
+    const { commentId } = req.params;
 
     try {
         const comment = await prisma.comment.findUnique({
@@ -63,10 +53,6 @@ export const deleteComment = async (req, res) => {
 
         if (!comment) {
             return res.status(404).json({ error: 'Comentário não encontrado.' });
-        }
-
-        if (comment.postId !== parseInt(postId)) {
-            return res.status(400).json({ error: 'Comentário não pertence ao post especificado.' });
         }
 
         await prisma.comment.delete({

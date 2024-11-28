@@ -7,6 +7,8 @@ import imgLogOff from '../assets/logoff.svg';
 import imgDelete from '../assets/delete.svg';
 import imgFeed from '../assets/feed.svg';
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 export default function Perfil() {
     const navigate = useNavigate();
     const modalRef = useRef(null);  // Ref para o modal
@@ -46,7 +48,7 @@ export default function Perfil() {
     useEffect(() => {
         const loadUserProfile = async () => {
             try {
-                const response = await fetch('http://localhost:4000/users/profile', {
+                const response = await fetch(`${SERVER_URL}/users/profile`, {
                     method: 'GET',
                     credentials: 'include',
                 });
@@ -74,7 +76,7 @@ export default function Perfil() {
 
     const handleDelete = async () => {
         try {
-            const response = await fetch('http://localhost:4000/users/delete', {
+            const response = await fetch(`${SERVER_URL}/users/delete`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -94,7 +96,7 @@ export default function Perfil() {
 
     const handleSaveEdit = async () => {
         try {
-            const response = await fetch('http://localhost:4000/users/update-User', {
+            const response = await fetch(`${SERVER_URL}/users/update-User`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
