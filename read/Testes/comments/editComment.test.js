@@ -3,8 +3,9 @@ import fetchCookie from 'fetch-cookie';
 
 const fetchWithCookies = fetchCookie(fetch);
 
-const apiUrlLogin = 'http://localhost:4000/users/login';
+const apiUrlLogin = 'http://localhost:4000/users/login'; 
 const apiUrlComments = 'http://localhost:4000/posts/:postId/comments/:commentId'; 
+
 
 const loginUser = async () => {
     const loginResponse = await fetchWithCookies(apiUrlLogin, {
@@ -13,10 +14,10 @@ const loginUser = async () => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            email: 'jjj@jjj.com',
-            password: 'jjj123',
+            email: 'iii@iii.com',
+            password: 'iii123',
         }),
-        credentials: 'include', // Inclui cookies
+        credentials: 'include',
     });
 
     const text = await loginResponse.text();
@@ -28,7 +29,7 @@ const loginUser = async () => {
     }
 
     if (!loginData) {
-        console.log('Erro no login. Não é possível deletar o comentário.');
+        console.log('Erro no login. Não é possível editar o comentário.');
         return false;
     }
 
@@ -36,48 +37,57 @@ const loginUser = async () => {
     return true;
 };
 
-const deleteComment = async (postId, commentId) => {
+const editComment = async (postId, commentId, content) => {
     const url = apiUrlComments
         .replace(':postId', postId)
         .replace(':commentId', commentId);
 
-    console.log("\n \n URL para deletar: ", url);
+    console.log("\n \n URL para editar: ", url);
 
     const response = await fetchWithCookies(url, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ content }),
         credentials: 'include',
     });
 
     const text = await response.text();
 
-    console.log('Resposta ao deletar comentário:', text);
+    console.log('Resposta ao editar comentário:', text);
 
     if (!response.ok) {
-        console.error(`Erro ao deletar o comentário ${commentId}: ${response.statusText}`);
+        console.error(`Erro ao editar o comentário ${commentId}: ${response.statusText}`);
         return null;
     }
 
-    return true;
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (error) {
+        console.error("Erro ao parsear resposta JSON:", error);
+        return null;
+    }
+
+    return data;
 };
 
-const testDeleteComment = async () => {
+const testEditComment = async () => {
     const loggedIn = await loginUser();
     const postId = 9; 
-    const commentId = 8;
+    const commentId = 9; 
 
     if (loggedIn) {
-        const success = await deleteComment(postId, commentId);
-        if (success) {
-            console.log('Comentário deletado com sucesso!');
+        const editedComment = await editComment(postId, commentId, 'iii viu jjj deletando o comentario D:');
+        if (editedComment) {
+            console.log('Comentário editado com sucesso!', editedComment);
         } else {
-            console.log('Erro ao deletar o comentário.');
+            console.log('Erro ao editar o comentário.');
         }
     } else {
-        console.log('Erro no login. Não é possível deletar o comentário.');
+        console.log('Erro no login. Não é possível editar o comentário.');
     }
 };
 
-testDeleteComment();
+testEditComment();

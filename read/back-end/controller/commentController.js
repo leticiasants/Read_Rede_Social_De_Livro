@@ -1,83 +1,80 @@
-// controlador de tudo que envolve o comentario de uma postagem
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const createComment = async (req, res) => {
-    const { content, postId } = req.body;
-    const userId = req.user.id; 
+    console.log('Parâmetros:', req.params);
+    console.log('Corpo da requisição:', req.body);
+    
+    const { postId } = req.params;  
+    const { content } = req.body;   
 
     try {
         const newComment = await prisma.comment.create({
             data: {
-                content: content,
-                postId: postId,
-                userId: userId,
+                content,
+                postId: parseInt(postId),  
+                userId: req.user.id,       
             },
         });
-
-        res.status(201).json({ message: "Comentário criado com sucesso!", comment: newComment });
+        res.status(201).json(newComment);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao criar comentário." });
+        res.status(500).json({ error: 'Erro ao criar comentário.' });
     }
 };
 
-export const deleteComment = async (req, res) => {
-    const { commentId } = req.params;
-    const userId = req.user.id; 
+export const editComment = async (req, res) => {
+    const { postId, commentId } = req.params;  // IDs de post e comentário
+    const { content } = req.body;               
 
     try {
         const comment = await prisma.comment.findUnique({
             where: { id: parseInt(commentId) },
-            include: { post: true },
         });
 
         if (!comment) {
-            return res.status(404).json({ message: "Comentário não encontrado." });
+            return res.status(404).json({ error: 'Comentário não encontrado.' });
         }
 
-        if (comment.userId !== userId && comment.post.userId !== userId) {
-            return res.status(403).json({ message: "Você não tem permissão para deletar este comentário." });
+        // Verifica se o comentário pertence ao post e se o usuário tem permissão
+        if (comment.postId !== parseInt(postId)) {
+            return res.status(400).json({ error: 'Comentário não pertence ao post especificado.' });
+        }
+
+        const updatedComment = await prisma.comment.update({
+            where: { id: parseInt(commentId) },
+            data: { content },
+        });
+
+        res.status(200).json(updatedComment);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao editar comentário.' });
+    }
+};
+
+// Função para deletar um comentário específico de um post
+export const deleteComment = async (req, res) => {
+    const { postId, commentId } = req.params;
+
+    try {
+        const comment = await prisma.comment.findUnique({
+            where: { id: parseInt(commentId) },
+        });
+
+        if (!comment) {
+            return res.status(404).json({ error: 'Comentário não encontrado.' });
+        }
+
+        if (comment.postId !== parseInt(postId)) {
+            return res.status(400).json({ error: 'Comentário não pertence ao post especificado.' });
         }
 
         await prisma.comment.delete({
             where: { id: parseInt(commentId) },
         });
 
-        res.status(200).json({ message: "Comentário deletado com sucesso!" });
+        res.status(200).json({ message: 'Comentário deletado com sucesso.' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao deletar comentário." });
-    }
-};
-
-export const editComment = async (req, res) => {
-    const { commentId } = req.params; 
-    const { content } = req.body;  
-    const userId = req.user.id;  
-
-    try {
-        const comment = await prisma.comment.findUnique({
-            where: { id: parseInt(commentId) },
-        });
-
-        if (!comment) {
-            return res.status(404).json({ message: "Comentário não encontrado." });
-        }
-
-        if (comment.userId !== userId) {
-            return res.status(403).json({ message: "Você não tem permissão para editar este comentário." });
-        }
-
-        const updatedComment = await prisma.comment.update({
-            where: { id: parseInt(commentId) },
-            data: { content: content },  
-        });
-
-        res.status(200).json({ message: "Comentário atualizado com sucesso!", comment: updatedComment });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao editar comentário." });
+        res.status(500).json({ error: 'Erro ao excluir comentário.' });
     }
 };

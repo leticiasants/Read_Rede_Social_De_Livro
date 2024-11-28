@@ -1,6 +1,11 @@
+import { redirect } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -15,13 +20,15 @@ export default function Login() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message);
+        // alert(result.message);
+        navigate('/feed');
       } else {
         alert(result.message);
       }

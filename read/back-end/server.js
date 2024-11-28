@@ -10,7 +10,6 @@ import { dirname } from 'path';
 
 import initializePassport from './config/passportConfig.js';
 import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 
@@ -23,7 +22,7 @@ initializePassport(passport);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.static(path.join(__dirname, '../front-end/dist')));
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -33,6 +32,11 @@ app.use(session({
     secret: "secret",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: false,  
+        sameSite: 'lax',
+    },
 }));
 
 app.use(passport.initialize());
@@ -40,9 +44,8 @@ app.use(passport.session());
 app.use(flash());
 
 app.use('/users', authRoutes);  
-app.use('/profile', userRoutes); 
 app.use('/posts', postRoutes); 
-app.use('/comments', commentRoutes); 
+app.use('/posts/:postId/comments', commentRoutes); 
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../front-end/dist', 'index.html')); 

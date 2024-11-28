@@ -1,21 +1,49 @@
-import { driver } from '../selenium.config.js';
-import { By, until } from 'selenium-webdriver';
-import { assert } from 'chai';
+import fetch from 'node-fetch';
+import fetchCookie from 'fetch-cookie';
 
-describe('Registrar usuario', function () {
-  it('Deve registrar um novo usuario', async function () {
-    await driver.get('http://localhost:5173/register');
-    
- 
-    await driver.findElement(By.name('username')).sendKeys('zzz');
-    await driver.findElement(By.name('email')).sendKeys('zzz@zzz.com');
-    await driver.findElement(By.name('password')).sendKeys('zzz123');
-    await driver.findElement(By.name('passwordconfirm')).sendKeys('zzz123');
+const apiUrl = 'http://localhost:4000/users/register';
 
-    await driver.findElement(By.css('button[type="submit"]')).click();
-    
-    await driver.wait(driver.getCurrentUrl(), 5000);
-    const currentUrl = await driver.getCurrentUrl();
-    assert.equal(currentUrl, 'http://localhost:5173/register');  
-  });
-});
+const fetchWithCookies = fetchCookie(fetch);
+
+const registerUser = async () => {
+    const registerResponse = await fetchWithCookies(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: 'lll',
+            email: 'lll@lll.com',
+            password: 'lll123',
+            password2: 'lll123',
+        }),
+        credentials: 'include',
+    });
+
+    const text = await registerResponse.text();
+    let registerData = null;
+    try {
+        registerData = JSON.parse(text);
+    } catch (error) {
+        console.error("Erro ao parsear JSON:", error);
+    }
+
+    if (!registerData) {
+        console.log('Erro no registro. Não é possível criar o usuário.');
+        return false;
+    }
+
+    console.log('Usuário registrado com sucesso:', registerData);
+    return registerData;
+};
+
+const testUserRegistration = async () => {
+    const registration = await registerUser();
+    if (registration) {
+        console.log('Registro bem-sucedido.');
+    } else {
+        console.log('Erro no registro do usuário.');
+    }
+};
+
+testUserRegistration();
