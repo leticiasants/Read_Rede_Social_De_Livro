@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import Publications from './Publication';
 import imgBook from '../assets/book.svg';
 import imgEdit from '../assets/edit.svg';
 import imgLogOff from '../assets/logoff.svg';
 import imgDelete from '../assets/delete.svg';
 import imgFeed from '../assets/feed.svg';
 
-export default function Perfil() {
-    const navigate = useNavigate();
+export default function Perfil() {const navigate = useNavigate();
     const modalRef = useRef(null);  // Ref para o modal
     const buttonRef = useRef(null); // Ref para o botão "+"
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +22,13 @@ export default function Perfil() {
     const [originalEmail, setOriginalEmail] = useState('');
     const [originalBiografia, setOriginalBiografia] = useState('');
     const [originalNewPassword, setOriginalNewPassword] = useState('');
+
+    const [books, setBooks] = useState([]); // Lista de livros
+    const [newBooks, setNewBooks] = useState({
+        Lendo: { name: '', author: '' },
+        Lido: { name: '', author: '' },
+        'Desejo ler': { name: '', author: '' },
+    }); // Campos de entrada separados para cada lista
 
     const openDeleteModal = () => setIsDeleteModalOpen(true);
     const closeDeleteModal = () => setIsDeleteModalOpen(false);
@@ -41,6 +46,35 @@ export default function Perfil() {
         setBiografia(originalBiografia);
         setNewPassword(originalNewPassword);
         setIsEditModalOpen(false);
+    };
+
+    const addBook = (e, status) => {
+        e.preventDefault();
+        const newBook = newBooks[status];
+        if (newBook.name && newBook.author) {
+            setBooks([...books, { ...newBook, status, rating: 0 }]);
+            setNewBooks({
+                ...newBooks,
+                [status]: { name: '', author: '' },
+            });
+        }
+    };
+
+    const deleteBook = (index) => {
+        const updatedBooks = books.filter((_, i) => i !== index);
+        setBooks(updatedBooks);
+    };
+
+    const changeStatus = (index, newStatus) => {
+        const updatedBooks = [...books];
+        updatedBooks[index].status = newStatus;
+        setBooks(updatedBooks);
+    };
+
+    const updateRating = (index, newRating) => {
+        const updatedBooks = [...books];
+        updatedBooks[index].rating = newRating;
+        setBooks(updatedBooks);
     };
 
     useEffect(() => {
@@ -147,6 +181,8 @@ export default function Perfil() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    
 
     return (
         <>
@@ -286,6 +322,104 @@ export default function Perfil() {
                     </div>
                 </div>
             )}
+
+            <main className="p-4 flex gap-4 justify-center">
+                {['Desejo ler', 'Lendo', 'Lido'].map((status) => (
+                    <div
+                        key={status}
+                        className="w-1/3 bg-gray-100 p-4 rounded-lg shadow-md"
+                    >
+                        <h3 className="text-lg font-bold text-center mb-4">{status}</h3>
+
+                        <ul>
+                            {books
+                                .filter((book) => book.status === status)
+                                .map((book, index) => (
+                                    <li
+                                        key={index}
+                                        className="relative flex flex-col gap-2 p-2 border rounded bg-white mb-4"
+                                    >
+                                        <button
+                                            className="absolute top-2 right-2"
+                                            onClick={() => deleteBook(index)}
+                                        >
+                                            <img
+                                                src={imgDelete}
+                                                alt="Delete"
+                                                className="w-4 h-4"
+                                            />
+                                        </button>
+                                        <div>
+                                            <p className="font-medium">{book.name}</p>
+                                            <p className="text-sm text-gray-500">{book.author}</p>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <select
+                                                className="p-1 border rounded text-sm"
+                                                value={book.status}
+                                                onChange={(e) => changeStatus(index, e.target.value)}
+                                            >
+                                                <option value="Lendo">Lendo</option>
+                                                <option value="Lido">Lido</option>
+                                                <option value="Desejo ler">Desejo ler</option>
+                                            </select>
+                                            <div className="flex items-center gap-1">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <span
+                                                        key={star}
+                                                        onClick={() => updateRating(index, star)}
+                                                        className={`cursor-pointer text-lg ${
+                                                            book.rating >= star
+                                                                ? 'text-yellow-400'
+                                                                : 'text-gray-300'
+                                                        }`}
+                                                    >
+                                                        ★
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                        </ul>
+
+                        <form onSubmit={(e) => addBook(e, status)} className="mt-4">
+                            <input
+                                type="text"
+                                placeholder="Nome do Livro"
+                                value={newBooks[status].name}
+                                onChange={(e) =>
+                                    setNewBooks({
+                                        ...newBooks,
+                                        [status]: { ...newBooks[status], name: e.target.value },
+                                    })
+                                }
+                                className="w-full border rounded px-2 py-1 mb-2"
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="Nome do Autor"
+                                value={newBooks[status].author}
+                                onChange={(e) =>
+                                    setNewBooks({
+                                        ...newBooks,
+                                        [status]: { ...newBooks[status], author: e.target.value },
+                                    })
+                                }
+                                className="w-full border rounded px-2 py-1 mb-2"
+                                required
+                            />
+                            <button
+                                type="submit"
+                                className="bg-blue-500 text-white px-4 py-2 rounded w-full"
+                            >
+                                Adicionar Livro
+                            </button>
+                        </form>
+                    </div>
+                ))}
+            </main>
         </>
     );
 }
